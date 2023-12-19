@@ -21,20 +21,7 @@ class DataTableServiceProvider extends ServiceProvider
             return "<?php echo \$__env->make('AF_dtable::header', $expression, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
         });
 
-        Blade::directive('AF_dtable_styles', function () {
-            $stylesPath1 = asset('vendor/AF_Datatables/datatables.bundle.css');
-            $stylesPath2 = asset('vendor/AF_Datatables/datatables.custom.css');
-            return "<link rel='stylesheet' type='text/css' href='{$stylesPath1}'>
-                    <link rel='stylesheet' type='text/css' href='{$stylesPath2}'>";
-        });
-
-
-        Blade::directive('AF_dtable_scripts', function () {
-            $scriptsPath1 = asset('vendor/AF_Datatables/datatables.bundle.js');
-            $scriptsPath2 = asset('vendor/AF_Datatables/datatables.custom.js');
-            return "<script src='{$scriptsPath1}'></script>
-                    <script src='{$scriptsPath2}'></script>";
-        });
+     
     }
 
     /**
@@ -50,6 +37,6 @@ class DataTableServiceProvider extends ServiceProvider
         // Add a namespace for vendor assets with the 'AF_DataTables' namespace
         $this->publishes([
             __DIR__ . '/../public' => public_path('/'),
-        ], 'artflow-studio');
+        ], 'artflow-studio/laravel-dynamic-datatable');
     }
 }

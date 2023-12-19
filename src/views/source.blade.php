@@ -1,10 +1,13 @@
 @push('AF_dtable.css')
-    @AF_dtable_styles();
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.bundle.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.custom.css') }}">
 @endpush
 
 
 @push('AF_dtable.js')
-    @AF_dtable_scripts();
+    <script src="{{ asset('vendor/AF_DataTables/datatables.bundle.js') }}"></script>
+    <script src="{{ asset('vendor/AF_DataTables/datatables.custom.js') }}"></script>
+
     <script>
         var datatable_func = function() {
             // Shared variables

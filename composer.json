@@ -18,6 +18,11 @@
             "ArtFlowStudio\\DynamicDatatable\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan vendor:publish --tag=artflow-studio/laravel-dynamic-datatable --force"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [
