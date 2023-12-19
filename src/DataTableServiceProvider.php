@@ -37,6 +37,6 @@ class DataTableServiceProvider extends ServiceProvider
         // Add a namespace for vendor assets with the 'AF_DataTables' namespace
         $this->publishes([
             __DIR__ . '/../public' => public_path('/'),
-        ], 'artflow-studio/laravel-dynamic-datatable');
+        ], 'AF_dtable');
     }
 }
