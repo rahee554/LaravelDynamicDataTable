@@ -1,0 +1,30 @@
+{
+    "name": "artflow-studio/laravel-dynamic-datatable",
+    "type": "library",
+    "description": "A Laravel package for dynamic datatables.",
+    "keywords": ["laravel", "datatable"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^10.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "ArtFlowStudio\\DynamicDatatable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ArtFlowStudio\\DynamicDatatable\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ArtFlowStudio\\DynamicDatatable\\DataTableServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
