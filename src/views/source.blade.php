@@ -1,5 +1,10 @@
-@push('dtable.js')
-    <script src="{{ asset('assets/plugins/custom/datatables/datatables.custom.js') }}"></script>
+@push('AF_dtable.css')
+    @AF_dtable_styles();
+@endpush
+
+
+@push('AF_dtable.js')
+    @AF_dtable_scripts();
     <script>
         var datatable_func = function() {
             // Shared variables
@@ -12,13 +17,13 @@
                 const tableRows = table.querySelectorAll('tbody tr');
                 // Initialize the DataTable without the default column visibility button ('l' removed from 'dom')
                 datatable = $(table).DataTable({
-                    "info": {{ $info ?? true }},
+                    "info": {{ $info ?? 'true' }},
                     'order': [{{ $order[0] ?? 0 }}, '{{ $order[1] ?? 'asc' }}'],
                     'pageLength': 10,
                     // 'buttons': [],
-                    processing: {{ $processing ?? true }},
-                    serverSide: {{ $serverside ?? true }},
-                    responsive: {{ $responsive ?? true }},
+                    processing: {{ $processing ?? 'true' }},
+                    serverSide: {{ $serverside ?? 'true' }},
+                    responsive: {{ $responsive ?? 'true' }},
                     select: {{ $select ?? false }},
 
                     ajax: {
@@ -196,29 +201,5 @@
         KTUtil.onDOMContentLoaded(function() {
             datatable_func.init();
         });
-
-
-        function swal_warning(swal_text) {
-            swal({
-                icon: "warning",
-                text: swal_text
-            });
-            return false;
-        }
-
-        function swal_success(swal_text) {
-            swal({
-                icon: "success",
-                text: swal_text,
-            });
-            return false;
-        }
-
-        function errors(arr = "") {
-            $.each(arr, function(key, value) {
-                $("." + key + "_error").html(value);
-            });
-            return false;
-        }
     </script>
 @endpush

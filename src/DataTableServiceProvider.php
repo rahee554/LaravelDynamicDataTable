@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace ArtFlowStudio\DynamicDatatable;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-
+use Illuminate\Support\Facades\View;
 
 class DataTableServiceProvider extends ServiceProvider
 {
@@ -13,11 +13,27 @@ class DataTableServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Blade::directive('dtable', function ($expression) {
-            return "<?php echo \$__env->make('datatables.source', $expression, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
+        Blade::directive('AF_dtable', function ($expression) {
+            return "<?php echo \$__env->make('AF_dtable::source', $expression, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
         });
-        Blade::directive('dtableBtns', function ($expression) {
-            return "<?php echo \$__env->make('Datatables.header', {$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
+
+        Blade::directive('AF_dtable_btns', function ($expression) {
+            return "<?php echo \$__env->make('AF_dtable::header', $expression, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
+        });
+
+        Blade::directive('AF_dtable_styles', function () {
+            $stylesPath1 = asset('vendor/AF_Datatables/datatables.bundle.css');
+            $stylesPath2 = asset('vendor/AF_Datatables/datatables.custom.css');
+            return "<link rel='stylesheet' type='text/css' href='{$stylesPath1}'>
+                    <link rel='stylesheet' type='text/css' href='{$stylesPath2}'>";
+        });
+
+
+        Blade::directive('AF_dtable_scripts', function () {
+            $scriptsPath1 = asset('vendor/AF_Datatables/datatables.bundle.js');
+            $scriptsPath2 = asset('vendor/AF_Datatables/datatables.custom.js');
+            return "<script src='{$scriptsPath1}'></script>
+                    <script src='{$scriptsPath2}'></script>";
         });
     }
 
@@ -26,6 +42,14 @@ class DataTableServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->loadViewsFrom(__DIR__ . '/views', 'ArtFlowStudio\\DynamicDatatable');
+
+        // Add a namespace for vendor views with the 'AF_dtable' namespace
+        View::addNamespace('AF_dtable', __DIR__ . '/views');
+
+        // Add a namespace for vendor assets with the 'AF_DataTables' namespace
+        $this->publishes([
+            __DIR__ . '/../public' => public_path('/'),
+        ], 'artflow-studio');
     }
 }
