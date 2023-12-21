@@ -3,6 +3,15 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.custom.css') }}">
 @endpush
 
+@php
+    if (config('app.env') !== 'production') {
+        $ErrorHandling = ' console.log("DataTables error:", error);
+            console.log("Server response:", xhr.responseText);';
+    } else {
+        $ErrorHandling = ''; // Set an empty string if not in production
+    }
+
+@endphp
 
 @push('AF_dtable.js')
     <script src="{{ asset('vendor/AF_DataTables/datatables.bundle.js') }}"></script>
@@ -33,8 +42,7 @@
                         },
                     },
                     error: function(xhr, error, thrown) {
-                        console.log("DataTables error:", error);
-                        console.log("Server response:", xhr.responseText);
+                        {!! html_entity_decode($ErrorHandling) !!}
                     },
                     "columnDefs": [{
                         "targets": @json($hide_cols ?? []),
