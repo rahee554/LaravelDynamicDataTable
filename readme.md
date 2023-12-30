@@ -68,6 +68,9 @@ At the end of the body tag:
  Other Options (Optional)
 ```
 'info' => 'true',
+'index' => '1', // For Multiple tables in Single View
+'pageLength' => '50',
+'order' => ['0', 'asc'],
 'processing' => 'true',
 'serverside' => 'true',
 'select' => 'true',
