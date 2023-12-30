@@ -1,6 +1,8 @@
 @push('AF_dtable.css')
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.bundle.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.custom.css') }}">
+    @if (!isset($index) || $index == 1)
+        <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.bundle.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AF_DataTables/datatables.custom.css') }}">
+    @endif
 @endpush
 
 @php
@@ -8,17 +10,24 @@
         $ErrorHandling = ' console.log("DataTables error:", error);
             console.log("Server response:", xhr.responseText);';
     } else {
-        $ErrorHandling = ''; // Set an empty string if not in production
+        $ErrorHandling = '';
     }
 
 @endphp
 
+
+
 @push('AF_dtable.js')
-    <script src="{{ asset('vendor/AF_DataTables/datatables.bundle.js') }}"></script>
-    <script src="{{ asset('vendor/AF_DataTables/datatables.custom.js') }}"></script>
+
+    @if (!isset($index) || $index == 1)
+        <script src="{{ asset('vendor/AF_DataTables/datatables.bundle.js') }}"></script>
+        <script src="{{ asset('vendor/AF_DataTables/datatables.custom.js') }}"></script>
+    @endif
+
+
 
     <script>
-        var datatable_func = (function() {
+        var {{ 'create_dtable' . ($index ?? 'create_dtable') }} = (function() {
             var table, datatable;
 
             var initDatatable = function() {
@@ -27,7 +36,7 @@
                 const defaultOptions = {
                     "info": {{ $info ?? 'true' }},
                     'order': [{{ $order[0] ?? 0 }}, '{{ $order[1] ?? 'asc' }}'],
-                    'pageLength': 10,
+                    'pageLength': {{ $pageLength ?? '10' }},
                     processing: {{ $processing ?? 'true' }},
                     serverSide: {{ $serverside ?? 'true' }},
                     responsive: {{ $responsive ?? 'true' }},
@@ -166,12 +175,6 @@
                 });
             };
 
-            var handleSearchDatatable = function() {
-                const filterSearch = document.querySelector('[data-kt-filter="search"]');
-                filterSearch.addEventListener('keyup', function(e) {
-                    datatable.search(e.target.value).draw();
-                });
-            };
 
             return {
                 init: function() {
@@ -181,13 +184,12 @@
                     }
                     initDatatable();
                     exportButtons();
-                    handleSearchDatatable();
                 }
             };
         })();
 
         KTUtil.onDOMContentLoaded(function() {
-            datatable_func.init();
+            {{ 'create_dtable' . ($index ?? 'create_dtable') }}.init();
         });
     </script>
 @endpush
