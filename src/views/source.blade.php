@@ -98,7 +98,7 @@
             };
 
             var customColvis = function() {
-                const colvisDropdown = $("#colvisDropdown");
+                const colvisDropdown = $("#colvisDropdown_{{ $index }}");
 
                 datatable.columns().every(function(index) {
                     const column = this;
@@ -163,7 +163,8 @@
                     ]
                 }).container().appendTo($('#default_dtable_btns'));
 
-                const exportButtons = document.querySelectorAll('#export_btn [data-kt-export]');
+                const exportButtons = document.querySelectorAll(
+                    '#export_btn{{ '_' . $index }} [data-kt-export]');
                 exportButtons.forEach(exportButton => {
                     exportButton.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -174,8 +175,39 @@
                     });
                 });
             };
+            var searchDtable = (index) => {
+                let filterSearch = document.querySelector('[data-dtable="search' + index + '"]');
+                let searchTimeout;
 
+                filterSearch.addEventListener('keyup', function(e) {
+                    const searchValue = e.target.value.trim();
 
+                    // Specify the columns you want to search in (replace [0, 2] with the actual column indices)
+                    let columnsToSearch = [];
+
+                    // Add a delay of 500ms before sending the request
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(function() {
+                        // Create an object with the search value and columns to search
+                        const searchData = {
+                            search: searchValue,
+                            search_columns: columnsToSearch
+                        };
+
+                        // Get the CSRF token from the meta tag in your HTML
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')
+                            .content;
+
+                        // If columnsToSearch is empty, search in all columns
+                        if (columnsToSearch.length === 0) {
+                            datatable.search(searchValue).draw();
+                        } else {
+                            // Send the HTTP request to your Laravel server
+                            datatable.columns(columnsToSearch).search(searchValue).draw();
+                        }
+                    }, 500);
+                });
+            };
             return {
                 init: function() {
                     table = document.querySelector('#{{ $id }}');
@@ -184,6 +216,8 @@
                     }
                     initDatatable();
                     exportButtons();
+                    searchDtable({{ $index ?? '' }});
+
                 }
             };
         })();

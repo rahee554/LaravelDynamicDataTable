@@ -5,7 +5,7 @@
                 <!--begin::Search-->
                 <div class="d-flex align-items-center position-relative my-1">
                     <span class="svg-icon fs-5 position-absolute ms-4"><i class="fad fa-search "></i></span>
-                    <input type="text" data-kt-filter="search"
+                    <input type="text" data-dtable="search{{$index}}"
                         class="form-control form-control-sm form-control-solid w-250px ps-14"
                         placeholder="Search Invoice" />
                 </div>
@@ -25,7 +25,7 @@
                     Export
                 </button>
                 <!--begin::Menu-->
-                <div id="export_btn"
+                <div id="export_btn{{ isset($index) ? "_" . $index : '' }}"
                     class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-200px py-4"
                     data-kt-menu="true">
                     <!--begin::Menu item-->
@@ -67,11 +67,11 @@
 
             @if ($colvis == true)
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="customColvisButton"
+                    <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="customColvisButton{{ isset($index) ? "_" . $index : '' }}"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Column Visibility
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="customColvisButton" id="colvisDropdown">
+                    <div class="dropdown-menu" aria-labelledby="customColvisButton" id="colvisDropdown{{ isset($index) ? "_" . $index : '' }}">
                         <!-- Dynamic content will be added here -->
                     </div>
                 </div>
