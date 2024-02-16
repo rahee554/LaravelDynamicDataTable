@@ -98,7 +98,7 @@
             };
 
             var customColvis = function() {
-                const colvisDropdown = $("#colvisDropdown_{{ $index }}");
+                const colvisDropdown = $("#colvisDropdown{{ isset($index) ? '_' . $index : '' }}");
 
                 datatable.columns().every(function(index) {
                     const column = this;
@@ -164,7 +164,7 @@
                 }).container().appendTo($('#default_dtable_btns'));
 
                 const exportButtons = document.querySelectorAll(
-                    '#export_btn{{ '_' . $index }} [data-kt-export]');
+                    '#export_btn{{ isset($index) ? '_' . $index : '' }} [data-kt-export]');
                 exportButtons.forEach(exportButton => {
                     exportButton.addEventListener('click', function(e) {
                         e.preventDefault();
