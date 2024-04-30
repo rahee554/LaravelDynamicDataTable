@@ -5,7 +5,7 @@
                 <!--begin::Search-->
                 <div class="d-flex align-items-center position-relative my-1">
                     <span class="svg-icon fs-5 position-absolute ms-4"><i class="fad fa-search "></i></span>
-                    <input type="text" data-dtable="search{{$index}}"
+                    <input type="text" data-dtable="search{{ isset($index) ? "_" . $index : '' }}"
                         class="form-control form-control-sm form-control-solid w-250px ps-14"
                         placeholder="Search Invoice" />
                 </div>
