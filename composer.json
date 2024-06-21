@@ -1,5 +1,5 @@
 {
-    "name": "artflow-studio/datatable",
+    "name": "artflow-studio/laravel-dynamic-datatable",
     "type": "library",
     "description": "A Laravel package for dynamic datatables.",
     "keywords": ["laravel", "datatable"],
