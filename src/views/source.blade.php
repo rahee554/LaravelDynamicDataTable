@@ -7,7 +7,7 @@
 
 @php
     if (config('app.env') !== 'production') {
-        $ErrorHandling = ' console.log("DataTables error:", error);
+        $ErrorHandling = ' console.log(":::::: DataTables error ::::::", error);
             console.log("Server response:", xhr.responseText);';
     } else {
         $ErrorHandling = '';
@@ -27,7 +27,7 @@
 
 
     <script>
-        var {{ 'create_dtable' . ($index ?? 'create_dtable') }} = (function() {
+        var {{ 'create_dtable' . ($index ?? '') }} = (function() {
             var table, datatable;
 
             var initDatatable = function() {
@@ -37,18 +37,28 @@
                     "info": {{ $info ?? 'true' }},
                     'order': [{{ $order[0] ?? 0 }}, '{{ $order[1] ?? 'asc' }}'],
                     'pageLength': {{ $pageLength ?? '10' }},
-                    processing: {{ $processing ?? 'true' }},
-                    serverSide: {{ $serverside ?? 'true' }},
-                    responsive: {{ $responsive ?? 'true' }},
-                    select: {{ $select ?? 'false' }},
-                    ajax: {
+                    'processing': {{ $processing ?? 'true' }},
+                    'serverSide': {{ $serverside ?? 'true' }},
+                    'responsive': {{ $responsive ?? 'false' }},
+                    'select': {{ $select ?? 'false' }},
+                    'ajax': {
                         url: '{{ route($route) }}',
                         type: 'POST',
                         data: function(d) {
                             return $.extend({}, d, {
                                 _token: $('meta[name="csrf-token"]').attr("content"),
+                                @if (isset($filters) && !empty($filters))
+                                    @foreach ($filters as $filter)
+                                        '{{ $filter['key'] }}': $('#{{ $filter['id'] }}')
+                                        .val(),
+                                    @endforeach
+                                @endif
+
+
                             });
                         },
+
+
                     },
                     error: function(xhr, error, thrown) {
                         {!! html_entity_decode($ErrorHandling) !!}
@@ -70,7 +80,8 @@
                                     @isset($render)
                                         @foreach ($render as $renderInfo)
                                             if (meta.col === {{ $renderInfo['col'] }}) {
-                                                return `{!! addslashes($renderInfo['html']) !!}`.replace('${data}',
+                                                return `{!! addslashes($renderInfo['html']) !!}`.replace(
+                                                    '${data}',
                                                     data);
                                             }
                                         @endforeach
@@ -94,9 +105,9 @@
 
                 datatable = $(table).DataTable(defaultOptions);
                 customColvis();
-                $('.dataTables_filter').css('display', 'none');
             };
 
+            @stack('functions')
             var customColvis = function() {
                 const colvisDropdown = $("#colvisDropdown{{ isset($index) ? '_' . $index : '' }}");
 
@@ -175,15 +186,24 @@
                     });
                 });
             };
-            var searchDtable = (index) => {
-                let filterSearch = document.querySelector('[data-dtable="search' + index + '"]');
+            var searchDtable = function(index) {
+                let filterSearch = document.querySelector('[data-dtable="search' + (index ? '_' +
+                        index : '') +
+                    '"]');
                 let searchTimeout;
 
                 filterSearch.addEventListener('keyup', function(e) {
                     const searchValue = e.target.value.trim();
 
-                    // Specify the columns you want to search in (replace [0, 2] with the actual column indices)
+                    // Reset columnsToSearch array for each keyup event
                     let columnsToSearch = [];
+
+                    // Get all visible columns in the current datatable instance
+                    datatable.columns().every(function() {
+                        if (this.visible()) {
+                            columnsToSearch.push(this.index());
+                        }
+                    });
 
                     // Add a delay of 500ms before sending the request
                     clearTimeout(searchTimeout);
@@ -194,36 +214,46 @@
                             search_columns: columnsToSearch
                         };
 
-                        // Get the CSRF token from the meta tag in your HTML
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]')
-                            .content;
-
                         // If columnsToSearch is empty, search in all columns
                         if (columnsToSearch.length === 0) {
                             datatable.search(searchValue).draw();
                         } else {
                             // Send the HTTP request to your Laravel server
-                            datatable.columns(columnsToSearch).search(searchValue).draw();
+                            datatable.columns(columnsToSearch).search(searchValue)
+                                .draw();
                         }
                     }, 500);
                 });
             };
+
             return {
                 init: function() {
                     table = document.querySelector('#{{ $id }}');
                     if (!table) {
-                        return;
+                        return
                     }
                     initDatatable();
                     exportButtons();
-                    searchDtable({{ $index ?? '' }});
+                    searchDtable();
+
+                    // Event listener for city select change
+
+                    @if (isset($filters) && !empty($filters))
+                        @foreach ($filters as $filter)
+                            $('#{{ $filter['id'] }}').on('change', function() {
+                                // Update DataTable ajax data and redraw
+                                datatable.ajax.reload();
+                            });
+                        @endforeach
+                    @endif
 
                 }
             };
+
         })();
 
         KTUtil.onDOMContentLoaded(function() {
-            {{ 'create_dtable' . ($index ?? 'create_dtable') }}.init();
+            {{ 'create_dtable' . ($index ?? '') }}.init();
         });
     </script>
 @endpush
