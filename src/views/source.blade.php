@@ -100,6 +100,8 @@
                                     '{{ $class[1] }}');
                             @endforeach
                         @endisset
+
+                        
                     },
                 };
 
@@ -108,7 +110,7 @@
             };
 
             @stack('functions')
-            var customColvis = function() {
+            var customColvis = function() {  
                 const colvisDropdown = $("#colvisDropdown{{ isset($index) ? '_' . $index : '' }}");
 
                 datatable.columns().every(function(index) {
